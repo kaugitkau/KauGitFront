@@ -12,7 +12,7 @@ function BottomNav() {
 
   return (
     <>
-    <div className="flex block h-18 mt-60 md:hidden"></div>
+    <div className="flex h-36 mt-60 md:hidden"></div>
     <div className="fixed inset-x-0 bottom-0 flex justify-around px-3 py-2 bg-white shadow-lg md:hidden">
       <div
         className={`flex flex-col items-center w-full justify-center ${activeTab === 'home' ? 'text-blue-500' : 'text-gray-500'}`}

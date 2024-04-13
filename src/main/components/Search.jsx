@@ -1,5 +1,5 @@
 import { FaSearch } from "react-icons/fa";
-import {Input} from 'react-daisyui';
+// import {Input} from 'react-daisyui';
 
 export default function SearchBox() {
   return (
