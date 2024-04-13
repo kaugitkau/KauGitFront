@@ -6,7 +6,7 @@ import HousingPreview from '../dashboard/HousingPreview';
 import Layout from '../main/Layout';
 
 // root route
-export default function Root() { // Home Dashboard
+export default function Home() { // Home Dashboard
     return (
         <Layout Content={
         <>
