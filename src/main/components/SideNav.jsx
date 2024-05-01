@@ -4,10 +4,11 @@ import { FaClipboardList, FaSignOutAlt } from 'react-icons/fa';
 import { LuSettings2 } from "react-icons/lu";
 import { FaHome, FaUserFriends, FaDoorOpen } from "react-icons/fa";
 import { IoChatbubbles } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Sidebar() {
   // 현재 활성화된 메뉴 항목을 추적합니다.
+  let navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState('home');
 
   const menuItems = [
@@ -26,30 +27,31 @@ function Sidebar() {
       </div>
       <ul>
         {menuItems.map((item) => (
-          <Link to={item.link}>
+          // <Link to={item.link}>
           <li
             key={item.name}
             className={`text-sm font-semibold uppercase mt-4 py-3 pl-5 flex items-center gap-4 hover:bg-blue-100 hover:text-blue-400 ${
               activeMenu === item.name ? 'bg-blue-50 text-blue-500' : 'text-slate-400'
             }`}
             onClick={() => {
-              setActiveMenu(item.name)
+              setActiveMenu(item.name);
+              navigate(item.link);
             }}
           >
             <item.icon className="ml-4 text-xl" />
             {item.label}
           </li>
-          </Link>
+          // </Link>
         ))}
       </ul>
       <ul className="p-0 mt-auto mb-12">
-      <li className="hover:bg-slate-50 text-slate-450 hover:text-sky-600">
+      <li className="hover:bg-slate-50 text-slate-400 hover:text-sky-600">
         <button className="flex items-center gap-4 py-3 pl-5 mt-4 text-sm font-semibold uppercase">
           <LuSettings2 className="ml-4 text-xl" />
           Settings
         </button>
         </li>
-        <li className="hover:bg-slate-50 text-slate-450 hover:text-sky-600">
+        <li className="hover:bg-slate-50 text-slate-400 hover:text-sky-600">
         <button className="flex items-center gap-4 py-3 pl-5 mt-4 text-sm font-semibold uppercase ">
           <FaSignOutAlt className="ml-4 mr-1 text-xl" />
           Logout
