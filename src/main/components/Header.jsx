@@ -1,7 +1,7 @@
-import React, { useEffect, useState, FormEvent } from 'react';
-import { FaRegBell, FaPen } from 'react-icons/fa';
-import { Avatar, Dropdown } from 'react-daisyui';
-import SearchBox from './Search';
+import React, { useEffect, useState } from 'react';
+import { Navbar } from 'react-daisyui';
+import SearchModal from './SearchModal';
+import NotificationsModal from './Notifications';
 
 function Header() {
   const [userData, setUserData] = useState([]);
@@ -41,33 +41,49 @@ function Header() {
   // };
 
   return (
-    <>
-    <div className="px-4 h-28 navbar bg-slate-200 w-full-[52] md:pl-56">
-      <div className="navbar-start">
-        <SearchBox />
+  <>
+    <Navbar className="fixed z-10 bg-cyan-400">
+      <div className='flex justify-center w-screen md:justify-start md:items-start'>
+        <label tag="a" className="pl-24 text-xl font-extrabold text-white normal-case md:pl-24" color="ghost">
+          HANZOOM
+        </label>
       </div>
-      <div className="space-x-3 navbar-end">
-        <button className="bg-white border-0 btn btn-circle btn-sm">
-          <FaRegBell className="text-lg" />
-        </button>
-        <div className="hidden dropdown dropdown-end md:block">
-          <Dropdown.Toggle className="btn btn-ghost btn-circle avatar btn-md" button={false}>
-          <div className="w-10 rounded-full">
-              <Avatar src={userData.image} />
-            </div>
-          </Dropdown.Toggle>
-          <Dropdown.Menu className="z-[1] menu bg-slate-50 rounded-lg w-28">
-            <Dropdown.Item>Item 1</Dropdown.Item>
-            <Dropdown.Item>Item 2</Dropdown.Item>
-          </Dropdown.Menu>
-        </div>
-        <div className="dropdown dropdown-end">
-          {/* <span>Lv.{userData.age}</span> */}
-        </div>
+      <div>
+      <SearchModal />
+      <NotificationsModal />
       </div>
-    </div>
-    </>
+    </Navbar>
+  </>
   );
+  
+    // <>
+    
+    // <div className="px-4 h-28 navbar bg-slate-200 w-full-[52] md:pl-56">
+    //   <div className="navbar-start">
+    //     <SearchBox />
+    //   </div>
+    //   <div className="space-x-3 navbar-end">
+    //     <button className="bg-white border-0 btn btn-circle btn-sm">
+    //       <FaRegBell className="text-lg" />
+    //     </button>
+    //     <div className="hidden dropdown dropdown-end md:block">
+    //       <Dropdown.Toggle className="btn btn-ghost btn-circle avatar btn-md" button={false}>
+    //       <div className="w-10 rounded-full">
+    //           <Avatar src={userData.image} />
+    //         </div>
+    //       </Dropdown.Toggle>
+    //       <Dropdown.Menu className="z-[1] menu bg-slate-50 rounded-lg w-28">
+    //         <Dropdown.Item>Item 1</Dropdown.Item>
+    //         <Dropdown.Item>Item 2</Dropdown.Item>
+    //       </Dropdown.Menu>
+    //     </div>
+    //     <div className="dropdown dropdown-end">
+    //       {/* <span>Lv.{userData.age}</span> */}
+    //     </div>
+    //   </div>
+    // </div>
+    // </>
+  // );
 }
 
 export default Header;

@@ -1,10 +1,10 @@
 // Sidebar.js
 import React, { useState } from 'react';
-import { FaClipboardList, FaSignOutAlt } from 'react-icons/fa';
-import { LuSettings2 } from "react-icons/lu";
-import { FaHome, FaUserFriends, FaDoorOpen } from "react-icons/fa";
-import { IoChatbubbles } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { AiFillHome } from "react-icons/ai";
+import { FaUserGroup } from "react-icons/fa6";
+import { FaRegCompass } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 
 function Sidebar() {
   // 현재 활성화된 메뉴 항목을 추적합니다.
@@ -12,51 +12,33 @@ function Sidebar() {
   const [activeMenu, setActiveMenu] = useState('home');
 
   const menuItems = [
-    { name: 'home', label: 'Home', icon: FaHome, link: `/` },
-    { name: 'sharing', label: 'Sharing', icon: FaDoorOpen, link: `/sharing`},
-    { name: 'mentoring', label: 'Mentoring', icon: FaUserFriends, link: `/mentoring` },
-    { name: 'posting', label: 'Posting', icon: FaClipboardList, link: `/posting`},
-    { name: 'community', label: 'Community', icon: IoChatbubbles, link: `/community` },
+    { name: 'home', label: 'Home', icon: AiFillHome, link: `/` },
+    { name: 'social', label: 'social', icon: FaUserGroup, link: `/social`},
+    { name: 'explore', label: 'explore', icon: FaRegCompass, link: `/explore` },
+    { name: 'profile', label: 'profile', icon: FaUserCircle, link: `/profile`},
     // 다른 메뉴 항목들을 여기 추가할 수 있습니다.
   ];
 
   return (
-    <div className="fixed flex flex-col h-screen bg-white w-52">
-      <div className="p-4 mt-8 mb-4 text-xl font-black text-center text-slate-800">
-        HANZOOM
-      </div>
+    <div className="fixed flex flex-col w-20 h-screen pt-20 bg-white shadow-lg">
       <ul>
         {menuItems.map((item) => (
           // <Link to={item.link}>
           <li
             key={item.name}
-            className={`text-sm font-semibold uppercase mt-4 py-3 pl-5 flex items-center gap-4 hover:bg-blue-100 hover:text-blue-400 ${
-              activeMenu === item.name ? 'bg-blue-50 text-blue-500' : 'text-slate-400'
+            className={`flex-col text-[10px] font-semibold uppercase mt-4 py-2 flex items-center gap-1 hover:bg-cyan-100 hover:text-cyan-400 hover:bg-opacity-20 ${
+              activeMenu === item.name ? 'bg-cyan-50 text-cyan-500' : 'text-cyan-800 text-opacity-35'
             }`}
             onClick={() => {
               setActiveMenu(item.name);
               navigate(item.link);
             }}
           >
-            <item.icon className="ml-4 text-xl" />
+            <item.icon className="text-xl" />
             {item.label}
           </li>
           // </Link>
         ))}
-      </ul>
-      <ul className="p-0 mt-auto mb-12">
-      <li className="hover:bg-slate-50 text-slate-400 hover:text-sky-600">
-        <button className="flex items-center gap-4 py-3 pl-5 mt-4 text-sm font-semibold uppercase">
-          <LuSettings2 className="ml-4 text-xl" />
-          Settings
-        </button>
-        </li>
-        <li className="hover:bg-slate-50 text-slate-400 hover:text-sky-600">
-        <button className="flex items-center gap-4 py-3 pl-5 mt-4 text-sm font-semibold uppercase ">
-          <FaSignOutAlt className="ml-4 mr-1 text-xl" />
-          Logout
-        </button>
-        </li>
       </ul>
     </div>
   );
