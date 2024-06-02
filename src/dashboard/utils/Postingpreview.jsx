@@ -47,7 +47,7 @@ export default function PostingPreview() {
                                     {post.tags.map((tag) => <span class="badge badge-ghost opacity-50 bg-gray-200 text-xs badge-sm text-gray-800">{tag}</span>)}</span>
                                     </td>
                                     <td class="text-xs">
-                                        <FaHeart className="inline mr-1 text-red-400"/><span className='text-red-500'>{post.reactions}</span>
+                                        <FaHeart className="inline mr-1 text-red-400"/><span className='text-red-500'>{post.reactions.likes}</span>
                                     </td>
                                     {/* <td>{post.userId}</td> */}
                                 </tr>

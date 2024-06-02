@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaUndo, FaStar, FaGlobe } from 'react-icons/fa';
+import { FaUndo, FaGlobe } from 'react-icons/fa';
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 import { MdLocationOn } from "react-icons/md";
 import { Pagination, Button, Rating } from 'react-daisyui';
@@ -32,36 +32,36 @@ function BuddyBox({ filteredUserList, loading, currentPage, itemsPerPage }) {
     <div className="w-full">
       <div className="flex flex-col items-start justify-start w-full gap-1 overflow-y-scroll">
         {currentItems.map((user) => (
-          <div key={user.id} className='flex flex-row w-full p-4 py-4 my-1 bg-white border border-gray-200 rounded-lg shadow'>
-            <div className="flex flex-col items-start w-1/3 pl-4">
-              <div className="flex items-center mt-1 mb-1">
+          <div key={user.id} className='flex flex-row w-full p-4 py-6 my-1 bg-white border border-gray-200 rounded-lg shadow'>
+            <div className="flex flex-col items-start justify-center w-1/3 px-3 pl-2 border-r">
+              <div className="flex items-center mb-1">
                 <span className="text-xl font-semibold text-gray-800">{user.username}</span>
               </div>
-              <div className="flex items-center mb-1 text-sm">
+              <div className="flex flex-wrap items-center mb-1 text-xs">
                 <span className={`fi fi-${getRandomCountry()} fis mr-2`}></span>
-                <span className='flex py-1 text-neutral-400 opacity-80'><FaGlobe className="mt-[0.2em] mr-1"/><span className="text-sm font-bold">EN / FN</span></span>
+                <span className='flex py-1 text-neutral-400 opacity-80'><FaGlobe className="mt-[0.2em] mr-1"/><span className="font-bold">EN / FN</span></span>
               </div>
-              <div className="flex items-center text-xs">
+              <div className="flex flex-wrap items-center text-xs">
                   <Rating value={Math.floor(user.rating * 2)} half={true} className="rating-sm">
                     {Array.from({ length: 10 }, (_, index) => (
                       <Rating.Item
                         key={index}
                         name="rating-10"
-                        className={`bg-green-500 mask mask-star-2 ${
+                        className={`bg-yellow-400 mask mask-star-2 ${
                           index % 2 === 0 ? "mask-half-1" : "mask-half-2"
                         }`}
                       />
                     ))}
                   </Rating>
-                  <span className="ml-2 text-xs font-light text-neutral-600">({user.rating} / 5)</span>
+                  <span className="mt-1 text-xs font-light md:mt-0 md:ml-2 text-neutral-600">({user.rating} / 5)</span>
               </div>
             </div>
             <div className="flex flex-col justify-between w-2/3 ml-4 text-left">
-              <div className="mt-1 text-lg font-semibold text-gray-800">Join us for a food tour in Hongdae!</div>
-              <div className="mt-1 text-sm text-gray-600">
-                Seoul this weekend (5/2). Looking for 3 people. I've researched the ...
+              <div className="font-semibold text-gray-800 text-md">Join us for a food tour in Hongdae!</div>
+              <div className="mt-1 text-xs text-neutral-400">
+                Seoul this weekend (5/2). Looking for 3 people. ...
               </div>
-              <div className="flex items-center mt-2 text-sm text-gray-500">
+              <div className="flex items-center mt-2 text-sm text-cyan-600">
                 <MdLocationOn className="mr-1 text-cyan-500" />
                 <span>{user.address.city}, {user.address.state}</span>
               </div>
@@ -147,7 +147,7 @@ export default function BuddyBoard() { // Home Dashboard
 
   return (
     <>
-      <div className="w-full text-left">
+      <div className="w-full h-full text-left">
         <h1 className="mb-4 font-mono text-2xl font-semibold tracking-wide text-cyan-500">Buddy</h1>
         <p className="font-mono text-sm tracking-tight text-neutral-600">Find your own travel companion! Go on a trip with a friend you like.</p>
         <div className="flex justify-between mt-4 mb-5">
@@ -167,7 +167,7 @@ export default function BuddyBoard() { // Home Dashboard
           <div>
             <div className="flex pr-2 mt-1">
               <div className='relative flex items-center w-full overflow-x-auto'>
-                <div className='flex items-center mb-2'>
+                <div className='flex items-center mb-5'>
                   {uniqueCities.map((city) => (
                     <div
                       key={city}
@@ -203,7 +203,7 @@ export default function BuddyBoard() { // Home Dashboard
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
           />
-          <div className="flex justify-center mt-8 mb-16">
+          <div className="flex justify-center h-32 mt-8 mb-16">
             <Pagination>
               {Array.from({ length: totalPages }, (_, index) => (
                 <Button

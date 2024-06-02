@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
   import Home from "./routes/home";
-  import SharingBoard from './routes/sharing';
-  import MentoringBoard from './routes/mentoring';
+  import ProfileBoard from './routes/profile';
+  import SocialBoard from './routes/social';
   import App from './App';
   
   const router = createBrowserRouter([
@@ -14,12 +14,12 @@ import { createBrowserRouter } from "react-router-dom";
             element: <Home />,
         },
         {
-          path: "sharing",
-          element: <SharingBoard />,
+          path: "profile",
+          element: <ProfileBoard />,
         },
         {
-          path: "mentoring",
-          element: <MentoringBoard />,
+          path: "social",
+          element: <SocialBoard />,
         },
       ]
     }

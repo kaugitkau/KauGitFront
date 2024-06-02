@@ -16,7 +16,7 @@ export default function BottomTab() {
   ];
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-10 flex justify-around px-20 py-3 bg-white shadow-lg md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-10 flex justify-around px-12 py-3 bg-white shadow-lg md:hidden">
       {menuItems.map((item) => (
         <div
           key={item.name}
