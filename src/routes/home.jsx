@@ -27,7 +27,7 @@ const tabsData = [
     label: "Posts",
     content:
       <PostsBoard />,
-  },
+  }
 ];
 
 function HomeContents() {

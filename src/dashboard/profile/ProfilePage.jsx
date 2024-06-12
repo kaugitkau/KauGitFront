@@ -1,7 +1,7 @@
 // src/dashboard/profile/ProfilePage.js
 import { Button, Avatar } from 'daisyui';
 
-function ProfilePage() {
+const ProfilePage = () => {
   return (
   <>
   <div className="min-h-screen p-4 bg-gray-100">
