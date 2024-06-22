@@ -18,9 +18,10 @@ const CommunityPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('/community/allpost'); // API URL을 여기에 넣습니다.
+        const response = await axios.get('/community/allpost');
         const data = response.data.previewDtoList;
         setPosts(data);
+        console.log(data.postingId);
         setTotalPages(Math.ceil(data.length / POSTS_PER_PAGE));
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -35,6 +36,7 @@ const CommunityPage = () => {
   };
 
   const handlePostClick = (postId) => {
+  
     navigate(`/details/${postId}`);
   };
 

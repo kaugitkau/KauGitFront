@@ -9,59 +9,32 @@ export default function PostComponent({ post, isOwner = false }) {
   const [isLiked, setIsLiked] = useState(false);
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
+  // const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     setToken(storedToken);
-    
-    const fetchUserInfo = async () => {
+
+    const checkIfLiked = async () => {
       try {
-        const response = await axios.get('http://15.165.117.224:8080/myinfo', {
+        const likeResponse = await axios.get(`/like/${post.postingId}`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
           withCredentials: true
         });
-        if (response.headers['content-type'].includes('application/json')) {
-          setUserInfo(response.data);
-          const likeResponse = await axios.get(`http://15.165.117.224:8080/like/${post.postingId}`, {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-            withCredentials: true
-          });
-          setIsLiked(likeResponse.data.isLiked);
-        } else {
-          console.error('Received unexpected HTML response');
-          setError('Authentication required. Please log in again.');
-        }
+        setIsLiked(likeResponse.data.isLiked);
       } catch (err) {
-        if (err.response) {
-          console.error('Error fetching user info:', err.response.data);
-        } else if (err.request) {
-          console.error('No response received:', err.request);
-        } else {
-          console.error('Error setting up request:', err.message);
-        }
+        console.error('Error checking like status:', err);
+        setError('Failed to check like status. Please try again.');
       }
     };
-
-    fetchUserInfo();
+    checkIfLiked();
   }, [post.postingId]);
 
   const handleLike = async () => {
-    if (!userInfo) {
-      setError('You need to log in to like this post');
-      return;
-    }
-
     try {
-      const response = await axios.post(`http://15.165.117.224:8080/like/${post.postingId}`, {
-        name: userInfo.name,
-        email: userInfo.email,
-        userId: userInfo.userId
-      }, {
+      const response = await axios.post(`/like/${post.postingId}`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
         },

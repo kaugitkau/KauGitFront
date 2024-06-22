@@ -6,6 +6,7 @@ import MainBoard from "../dashboard/home/MainBoard";
 import PostsBoard from "../dashboard/home/PostsBoard";
 import BuddyBoard from "../dashboard/home/BuddyBoard";
 import SharingBoard from "../dashboard/home/SharingBoard";
+import Cookies from 'js-cookie';
 
 const tabsData = [
   {
@@ -38,9 +39,16 @@ function HomeContents() {
   const tabsRef = useRef([]);
 
   useEffect(() => {
+    const sessionId = Cookies.get('JSESSIONID');
+    if (sessionId) {
+      console.log("session id found : ", sessionId);
+      // navigate('/');
+    }
+  }, []);
+  useEffect(() => {
     function setTabPosition() {
       const currentTab = tabsRef.current[activeTabIndex];
-      console.log(currentTab?.offsetLeft, currentTab?.clientWidth);
+      // console.log(currentTab?.offsetLeft, currentTab?.clientWidth);
       setTabUnderlineLeft(currentTab?.offsetLeft ?? 0);
       setTabUnderlineWidth(currentTab?.clientWidth ?? 0);
     }
