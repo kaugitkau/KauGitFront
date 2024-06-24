@@ -4,40 +4,41 @@ import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 import { Carousel, Button } from 'react-daisyui';
 import axios from 'axios';
 
+
+axios.defaults.withCredentials = true;
+
 export default function PostComponent({ post, isOwner = false }) {
   const [likes, setLikes] = useState(post.recommendedCnt || 0);
   const [isLiked, setIsLiked] = useState(false);
   const [error, setError] = useState(null);
-  const [token, setToken] = useState(null);
   // const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    setToken(storedToken);
 
-    const checkIfLiked = async () => {
-      try {
-        const likeResponse = await axios.get(`/like/${post.postingId}`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          },
-          withCredentials: true
-        });
-        setIsLiked(likeResponse.data.isLiked);
-      } catch (err) {
-        console.error('Error checking like status:', err);
-        setError('Failed to check like status. Please try again.');
-      }
-    };
-    checkIfLiked();
+    // const checkIfLiked = async () => {
+    //   try {
+    //     const likeResponse = await axios.get(`/like/1`, {
+    //       headers: {
+    //         Authorization: `Bearer ${storedToken}`
+    //       },
+    //       withCredentials: true
+    //     });
+    //     setIsLiked(likeResponse.data.isLiked);
+    //   } catch (err) {
+    //     console.error('Error checking like status:', err);
+    //     setError('Failed to check like status. Please try again.');
+    //   }
+    // };
+    // checkIfLiked();
   }, [post.postingId]);
-
+  
   const handleLike = async () => {
     try {
-      const response = await axios.post(`/like/${post.postingId}`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
+      const response = await axios.post(`/hanzoomApi/like`, null, {
+          "likeRequestDto": {
+            "postId": post.postingId
+          }}, {
+      }, {
         withCredentials: true
       });
       if (response.status === 200) {
@@ -51,7 +52,7 @@ export default function PostComponent({ post, isOwner = false }) {
   };
   
   return (
-    <div className="max-w-2xl p-4 mx-auto bg-white rounded-md shadow-md">
+    <div className="max-w-2xl p-4 mx-auto mt-32 bg-white rounded-md shadow-md md:mt-12">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">{post.title}</h1>
         <div className="flex items-center space-x-2">
@@ -79,7 +80,7 @@ export default function PostComponent({ post, isOwner = false }) {
       <div className="p-4 my-4 border border-gray-100 bg-gray-50">
         <p>{post.content}</p>
       </div>
-
+      
       <Carousel className="w-full">
         {(post.images || []).map((image, index) => (
           <img key={index} src={image} alt={`carousel-${index}`} className="object-cover w-full h-64" />

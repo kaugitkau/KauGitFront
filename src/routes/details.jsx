@@ -14,7 +14,7 @@ export default function Details() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`/community/${postId}`, { withCredentials: true });
+        const response = await axios.get(`/hanzoomApi/community/${postId}`, { withCredentials: true });
         setPost(response.data);
       } catch (err) {
         setError(err);

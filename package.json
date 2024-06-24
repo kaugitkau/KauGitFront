@@ -2,7 +2,6 @@
   "name": "hanz8m",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://15.165.117.224:8080",
   "dependencies": {
     "@appbaseio/reactivesearch": "^4.2.2",
     "@emotion/react": "^11.11.4",
@@ -17,6 +16,7 @@
     "axios": "^1.7.2",
     "clean-tag": "^3.1.1",
     "flag-icons": "^7.2.1",
+    "http-proxy-middleware": "^3.0.0",
     "js-cookie": "^3.0.5",
     "particles-bg": "^2.5.5",
     "react": "^18.2.0",

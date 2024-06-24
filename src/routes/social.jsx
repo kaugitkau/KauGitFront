@@ -18,8 +18,9 @@ const CommunityPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('/community/allpost');
+        const response = await axios.get('/hanzoomApi/community/allpost');
         const data = response.data.previewDtoList;
+        console.log(data);
         setPosts(data);
         console.log(data.postingId);
         setTotalPages(Math.ceil(data.length / POSTS_PER_PAGE));
@@ -36,7 +37,6 @@ const CommunityPage = () => {
   };
 
   const handlePostClick = (postId) => {
-  
     navigate(`/details/${postId}`);
   };
 

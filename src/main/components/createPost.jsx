@@ -46,30 +46,33 @@ export default function CreatePost({ defaultLocation = '서울' }) {
     setPhotos(photos.filter(photo => photo.file !== photoToDelete.file));
     URL.revokeObjectURL(photoToDelete.preview);
   };
-
+  
   const handleSubmit = async () => {
     const postData = {
       addPostingDto: {
         title,
         content,
         hashTag: tags.join(', ')
-      },
-      sessionUser: {
-        name: 'User Name', // 실제 사용자 이름으로 교체
-        email: 'user@example.com', // 실제 사용자 이메일로 교체
-        userId: 1 // 실제 사용자 ID로 교체
       }
+      // sessionUser: {
+      //   name: 'User Name', // 실제 사용자 이름으로 교체
+      //   email: 'user@example.com', // 실제 사용자 이메일로 교체
+      //   userId: 1 // 실제 사용자 ID로 교체
+      // }
     };
-
+  
     try {
-      const response = await axios.post('http://15.165.117.224:8080/community', postData);
+      const response = await axios.post('/hanzoomApi/community', postData);
       console.log('Post successful:', response.data);
       // 필요에 따라 성공 후 작업 추가
+  
+      // 포스팅 성공 후 처리할 로직 추가 가능 (예: 알림 메시지 등)
     } catch (error) {
       console.error('Error posting data:', error);
+      // 오류 처리 로직 추가 가능 (예: 오류 메시지 표시)
     }
   };
-
+  
   const truncateFileName = (name, maxLength = 20) => {
     if (name.length <= maxLength) return name;
     return `${name.slice(0, maxLength)}...`;

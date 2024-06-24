@@ -4,10 +4,22 @@ import Wave from 'react-wavify';
 import ParticlesBg from 'particles-bg';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 // import 'animate.css';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
-  const handleSocialLogin = (provider) => {
-    window.location.href = `http://parkingzone.shop:8080/oauth2/authorization/${provider}`;
+  const navigate = useNavigate();
+  
+  const handleSocialLogin = async (provider) => {
+    try {
+      const response = await axios.get(`/hanzoomApi/api/login?provider=${provider}`);
+      // console.log(response);
+      const { loginUrl } = response.data;
+      window.location.href = '/hanzoomApi/'+loginUrl;
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const videos = [
@@ -24,7 +36,41 @@ function LoginPage() {
 
     return () => clearInterval(videoSwitchInterval);
   }, [videos.length]);
+  useEffect(() => {
+    const sessionId = Cookies.get('JSESSIONID');
+    if (sessionId) {
+      navigate('/');
+    } else {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      if (code) {
+        // handleOAuthCallback(code);
+      }
+    }
+  }, [navigate]);
 
+  // const handleOAuthCallback = async (code) => {
+  //   try {
+  //     const response = await fetch(`/api/oauth2/code/google?code=${code}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+  //         'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
+  //         'Upgrade-Insecure-Requests': '1'
+  //       },
+  //       credentials: 'include'
+  //     });
+
+  //     if (response.ok) {
+  //       navigate('/');
+  //     } else {
+  //       console.error('OAuth callback failed:', response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error handling OAuth callback:', error);
+  //   }
+  // };
+  
   return (
     <div className="relative flex flex-col justify-center w-screen min-h-screen md:flex-row">
       {/* Mobile Background */}
