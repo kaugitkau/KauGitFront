@@ -1,24 +1,38 @@
-import React, { useState } from 'react';
+// components/SideNav.jsx
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { AiFillHome, AiOutlineLogin, AiOutlineLogout } from "react-icons/ai";
 import { FaUserGroup } from "react-icons/fa6";
 import { FaRegCompass } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { logout } from '../../redux/authSlice';
 
 function Sidebar() {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
   const [activeMenu, setActiveMenu] = useState('home');
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Replace this with actual login state
 
-  const handleLoginLogout = () => {
+  const handleLoginLogout = async () => {
     if (isLoggedIn) {
-      // Handle logout logic here
-      setIsLoggedIn(false);
+      try {
+        await axios.get('/hanzoomApi/api/logout');
+        dispatch(logout());
+        alert('You have been logged out.');
+      } catch (error) {
+        console.error('Error during logout', error);
+        alert('Error during logout. Please try again.');
+      }
     } else {
-      // Navigate to login page
       navigate('/login');
     }
   };
+
+  useEffect(() => {
+    console.log('[sideNav]의 isLoggedIn 상태 : ', isLoggedIn);
+  }, [isLoggedIn]);
 
   const menuItems = [
     { name: 'home', label: 'Home', icon: AiFillHome, link: `/` },

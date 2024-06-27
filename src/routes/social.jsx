@@ -22,6 +22,7 @@ const CommunityPage = () => {
       try {
         const response = await axios.get('/hanzoomApi/community/allpost');
         const data = response.data.previewDtoList;
+        console.log(data);
         setPosts(data);
         setTotalPages(Math.ceil(data.length / POSTS_PER_PAGE));
       } catch (error) {

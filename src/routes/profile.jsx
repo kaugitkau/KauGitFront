@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from '../main/Layout';
 import { Button, Avatar, Badge, Progress, Rating } from 'react-daisyui';
 import { FaComment, FaThumbsUp, FaStar } from 'react-icons/fa';
 import { PiHeadphonesBold } from "react-icons/pi";
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
-  return (
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      alert('Login Required!');
+      navigate('/login');
+    }
+    }, [isAuthenticated, navigate]);
+    if (!isAuthenticated) {
+      return null; // 로그인되지 않은 경우 아무것도 렌더링하지 않음
+    }
+    return (
     <div className="min-h-screen p-2 pt-16 md:pt-4">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-6">

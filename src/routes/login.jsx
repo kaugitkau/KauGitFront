@@ -7,54 +7,49 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import { setTrue, setFalse } from '../redux/authSlice';
+import { useDispatch } from 'react-redux';
 // import { useGoogleLogin } from "@react-oauth/google";
 // import NaverLogin from 'react-naver-login';
 
 
 function LoginPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   
   const handleSocialLogin = async (provider) => {
     console.log("1");
     try {
       console.log("2");
-      const response = await axios.get(`hanzoomApi/api/login?provider=${provider}`);
+      window.location.href = `hanzoomApi/oauth2/authorization/${provider}`;
       console.log("3")
-      const { loginUrl } = response.data;
-      console.log(response.data);
-      window.location.href='http://localhost:8080/login/oauth2/code/google';
-      const response2 = await axios.post(`hanzoomApi/oauth2/authorization/google`);
-      console.log(response2.data);
-      navigate('/');
+      // 서버에서 login-status가 업데이트되기를 기다리기 위해 지연 시간 추가
+      setTimeout(() => {
+        console.log('processing logins..');
+        navigate('/');
+      }, 1000); // 2초 대기 (필요에 따라 시간을 조정할 수 있음)
     } catch (err) {
       console.error(err);
     }
   };
-  // const googleSocialLogin = useGoogleLogin({
-  //   scope: "email profile",
-  //   onSuccess: async ({ code }) => {
-  //     axios
-  //       .get("hanzoomApi/oauth2/authorization/google/")
-  //       .then(({ data }) => {
-  //         console.log(data);
-  //       });
-  //       window.location.href = `/hanzoomApi/oauth2/authorization/google`;
-  //     axios
-  //       .post("hanzoomApi/oauth2/authorization/google/", null)
-  //       .then(({ data }) => {
-  //         console.log(data);
-  //       });
-  //       navigate('/');
-  //   },
-  //   onError: (errorResponse) => {
-  //     console.error(errorResponse);
-  //   },
-  //   ux_mode : 'redirect',
-  //   redirect_uri : `http://localhost:3000/login`,
-  //   login_url : `/oauth2/authorization/google`,
-  //   native_login_uri : `/hanzoomApi/oauth2/authorization/google`,
-  //   flow : 'implicit',
-  // });
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await axios.get('/hanzoomApi/api/login-status');
+        if (response.data === true) {
+          dispatch(setTrue());
+          navigate('/');
+        } else {
+          dispatch(setFalse());
+        }
+      } catch (error) {
+        console.error('Error checking auth status', error);
+        dispatch(setFalse());
+      }
+    };
+    checkAuthStatus();
+  }, [dispatch, navigate]);
 
   const videos = [
     "https://media.istockphoto.com/id/1061351670/ko/%EB%B9%84%EB%94%94%EC%98%A4/%EB%B9%9B%EC%9D%98-timelapse-%EA%B0%95%EB%82%A8-%EC%84%BC%ED%84%B0-%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4-%EC%A7%80%EA%B5%AC-%EC%84%9C%EC%9A%B8-%EC%84%9C%EC%9A%B8-%EC%8B%9C-%ED%95%9C%EA%B5%AD%EC%97%90%EB%8A%94-%EA%B5%90%EC%B0%A8%EB%A1%9C-%ED%86%B5%ED%95%B4-%ED%86%B5%ED%96%89-%EC%86%8D%EB%8F%84-%EC%82%B0%EC%B1%85%EB%A1%9C.mp4?s=mp4-640x640-is&k=20&c=jdxA5kf-sGMF5qd1YeWQ8JWxT4bzuwMhutzmNmxsZDI=",
