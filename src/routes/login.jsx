@@ -7,20 +7,54 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+// import { useGoogleLogin } from "@react-oauth/google";
+// import NaverLogin from 'react-naver-login';
+
 
 function LoginPage() {
   const navigate = useNavigate();
   
   const handleSocialLogin = async (provider) => {
+    console.log("1");
     try {
-      const response = await axios.get(`/hanzoomApi/api/login?provider=${provider}`);
-      // console.log(response);
+      console.log("2");
+      const response = await axios.get(`hanzoomApi/api/login?provider=${provider}`);
+      console.log("3")
       const { loginUrl } = response.data;
-      window.location.href = '/hanzoomApi/'+loginUrl;
+      console.log(response.data);
+      window.location.href='http://localhost:8080/login/oauth2/code/google';
+      const response2 = await axios.post(`hanzoomApi/oauth2/authorization/google`);
+      console.log(response2.data);
+      navigate('/');
     } catch (err) {
       console.error(err);
     }
   };
+  // const googleSocialLogin = useGoogleLogin({
+  //   scope: "email profile",
+  //   onSuccess: async ({ code }) => {
+  //     axios
+  //       .get("hanzoomApi/oauth2/authorization/google/")
+  //       .then(({ data }) => {
+  //         console.log(data);
+  //       });
+  //       window.location.href = `/hanzoomApi/oauth2/authorization/google`;
+  //     axios
+  //       .post("hanzoomApi/oauth2/authorization/google/", null)
+  //       .then(({ data }) => {
+  //         console.log(data);
+  //       });
+  //       navigate('/');
+  //   },
+  //   onError: (errorResponse) => {
+  //     console.error(errorResponse);
+  //   },
+  //   ux_mode : 'redirect',
+  //   redirect_uri : `http://localhost:3000/login`,
+  //   login_url : `/oauth2/authorization/google`,
+  //   native_login_uri : `/hanzoomApi/oauth2/authorization/google`,
+  //   flow : 'implicit',
+  // });
 
   const videos = [
     "https://media.istockphoto.com/id/1061351670/ko/%EB%B9%84%EB%94%94%EC%98%A4/%EB%B9%9B%EC%9D%98-timelapse-%EA%B0%95%EB%82%A8-%EC%84%BC%ED%84%B0-%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4-%EC%A7%80%EA%B5%AC-%EC%84%9C%EC%9A%B8-%EC%84%9C%EC%9A%B8-%EC%8B%9C-%ED%95%9C%EA%B5%AD%EC%97%90%EB%8A%94-%EA%B5%90%EC%B0%A8%EB%A1%9C-%ED%86%B5%ED%95%B4-%ED%86%B5%ED%96%89-%EC%86%8D%EB%8F%84-%EC%82%B0%EC%B1%85%EB%A1%9C.mp4?s=mp4-640x640-is&k=20&c=jdxA5kf-sGMF5qd1YeWQ8JWxT4bzuwMhutzmNmxsZDI=",
@@ -131,12 +165,19 @@ function LoginPage() {
             >
               <FaGoogle className="mr-2" /> Sign in with Google
             </button>
-            <button 
-              onClick={() => handleSocialLogin('naver')} 
+
+            <button onClick={() => handleSocialLogin('naver')} 
               className="flex items-center justify-center px-4 py-3 text-white transition-transform transform bg-green-500 rounded-md hover:bg-green-600 hover:scale-[1.01]"
             >
-              <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Naver_logotype_%282013%29.svg" alt="Naver" className="w-5 h-5 mr-2" /> Sign in with Naver
+              Sign in with Naver
             </button>
+              {/* <NaverLogin 
+              clientId="ud72bzHYNtmwGhKFDjAU"
+              callbackUrl="/hanzoomApi/oauth2/authorization/naver"
+              render={(props) => <div onClick={props.onClick}>Naver Login</div>}
+              onSuccess={(result) => console.log(result)}
+              onFailure={(result) => console.error(result)}
+            /> */}
           </div>
         </div>
         <p className="mt-4 text-center text-gray-600">Don't have an account? <a href="/signup" className="text-blue-500 hover:text-blue-700">Sign up</a></p>

@@ -15,6 +15,8 @@ export default function Details() {
     const fetchPost = async () => {
       try {
         const response = await axios.get(`/hanzoomApi/community/${postId}`, { withCredentials: true });
+        console.log("Post data : ");
+        console.log(response.data);
         setPost(response.data);
       } catch (err) {
         setError(err);

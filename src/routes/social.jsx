@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Pagination, Button, Badge, Avatar, Dropdown } from 'react-daisyui';
+import { Pagination, Button, Dropdown } from 'react-daisyui';
 import { FaComment, FaThumbsUp, FaPlus } from 'react-icons/fa';
 import { MdLocationOn, MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import { TbPhoto } from 'react-icons/tb';
 import Layout from '../main/Layout';
+import { getRelativeTime } from '../main/utils/dateUtils'; // Import the utility function
 
 const POSTS_PER_PAGE = 5;
 
@@ -13,6 +14,7 @@ const CommunityPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [sortType, setSortType] = useState('Newest');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,9 +22,7 @@ const CommunityPage = () => {
       try {
         const response = await axios.get('/hanzoomApi/community/allpost');
         const data = response.data.previewDtoList;
-        console.log(data);
         setPosts(data);
-        console.log(data.postingId);
         setTotalPages(Math.ceil(data.length / POSTS_PER_PAGE));
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -32,6 +32,22 @@ const CommunityPage = () => {
     fetchPosts();
   }, []);
 
+  const sortedPosts = () => {
+    let sortedPosts = [...posts];
+    if (sortType === 'Newest') {
+      sortedPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortType === 'Likes') {
+      sortedPosts.sort((a, b) => b.recommendedCount - a.recommendedCount);
+    } else if (sortType === 'Comments') {
+      sortedPosts.sort((a, b) => b.commentCount - a.commentCount);
+    }
+    return sortedPosts;
+  };
+
+  const handleSortChange = (type) => {
+    setSortType(type);
+  };
+
   const handleClick = (page) => {
     setCurrentPage(page);
   };
@@ -40,7 +56,7 @@ const CommunityPage = () => {
     navigate(`/details/${postId}`);
   };
 
-  const currentPosts = posts.slice(
+  const currentPosts = sortedPosts().slice(
     (currentPage - 1) * POSTS_PER_PAGE,
     currentPage * POSTS_PER_PAGE
   );
@@ -54,14 +70,14 @@ const CommunityPage = () => {
           <Dropdown className="mr-2">
             <Dropdown.Toggle button={false}>
               <Button className="flex justify-between px-4 text-xs text-left rounded-full md:px-5 w-28 md:w-32 md:text-md h-9 btn-sm bg-cyan-300 bg-opacity-40">
-                <span>Newest</span>
+                <span>{sortType}</span>
                 <MdOutlineKeyboardArrowDown className="text-sm"/>
               </Button>
             </Dropdown.Toggle>
             <Dropdown.Menu className="w-32 mt-2 bg-white rounded-md">
-              <Dropdown.Item>Views</Dropdown.Item>
-              <Dropdown.Item>Likes</Dropdown.Item>
-              <Dropdown.Item>Comments</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSortChange('Newest')}>Newest</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSortChange('Likes')}>Likes</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleSortChange('Comments')}>Comments</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </div>
@@ -74,15 +90,16 @@ const CommunityPage = () => {
                 <span className="mr-2 text-xl text-gray-300 md:text-3xl"><TbPhoto /></span>
                 <h2 className="font-bold text-md md:text-lg">{post.title}</h2>
               </div>
-              <p className="text-sm text-gray-600 md:text-md">{post.description}</p>
+              <p className="text-md text-gray-600 md:text-md">{post.description}</p>
               <div className="items-center justify-between mt-2 mb-2 md:flex">
-                <div className="text-xs text-gray-400 md:text-md">
+                <div className="text-sm text-gray-400 md:text-md">
                   <span className="flex">
                     <span className="flex">
                       <MdLocationOn className="mt-2 mr-1"/>
-                      <span className='mt-1'>{post.region}</span>
+                      <span className='mt-1'>
+                      { !post.region ? 'undefined' : posts.region }</span>
                     </span>
-                    <span className="mt-1 ml-2">{new Date(post.createdAt).toLocaleString()}</span>
+                    <span className="mt-1 ml-2">{getRelativeTime(post.createdAt)}</span>
                   </span>
                 </div>
                 <div className="flex items-center justify-start my-2 ml-1 space-x-3 text-gray-400 md:justify-end md:my-0 md:ml-0">

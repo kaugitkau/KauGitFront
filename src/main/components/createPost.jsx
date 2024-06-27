@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { FiMapPin, FiUpload, FiTrash, FiX } from 'react-icons/fi';
 import { Button, Input, Checkbox, Select, Textarea, Modal } from 'react-daisyui';
+import { useNavigate } from 'react-router-dom';
 
 const locations = {
   서울: ['서울대', '홍대', '연세대'],
@@ -9,6 +10,7 @@ const locations = {
 };
 
 export default function CreatePost({ defaultLocation = '서울' }) {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [tags, setTags] = useState([]);
   const [content, setContent] = useState('');
@@ -19,6 +21,7 @@ export default function CreatePost({ defaultLocation = '서울' }) {
   const [subLocation, setSubLocation] = useState(locations[defaultLocation][0]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const modalRef = useRef(null);
 
   const handleAddTag = () => {
@@ -31,6 +34,13 @@ export default function CreatePost({ defaultLocation = '서울' }) {
 
   const handleDeleteTag = (tagToDelete) => {
     setTags(tags.filter(tag => tag !== tagToDelete));
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleAddTag();
+    }
   };
 
   const handlePhotoUpload = (e) => {
@@ -46,33 +56,32 @@ export default function CreatePost({ defaultLocation = '서울' }) {
     setPhotos(photos.filter(photo => photo.file !== photoToDelete.file));
     URL.revokeObjectURL(photoToDelete.preview);
   };
-  
+
   const handleSubmit = async () => {
     const postData = {
-      addPostingDto: {
-        title,
-        content,
-        hashTag: tags.join(', ')
-      }
-      // sessionUser: {
-      //   name: 'User Name', // 실제 사용자 이름으로 교체
-      //   email: 'user@example.com', // 실제 사용자 이메일로 교체
-      //   userId: 1 // 실제 사용자 ID로 교체
-      // }
+      title,
+      content,
+      hashTags: tags
     };
-  
+    console.log('Sending postData to server:', postData); // 로그 추가
     try {
       const response = await axios.post('/hanzoomApi/community', postData);
       console.log('Post successful:', response.data);
-      // 필요에 따라 성공 후 작업 추가
-  
-      // 포스팅 성공 후 처리할 로직 추가 가능 (예: 알림 메시지 등)
+      alert('글 등록이 완료되었습니다!');
+      navigate(-1); // 이전 페이지로 돌아감
     } catch (error) {
       console.error('Error posting data:', error);
-      // 오류 처리 로직 추가 가능 (예: 오류 메시지 표시)
+      if (error.response && error.response.data && error.response.data.includes('<title>Please sign in</title>')) {
+        setErrorMessage('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+        setTimeout(() => {
+          navigate('/signin'); // 로그인 페이지로 이동
+        }, 2000);
+      } else {
+        setErrorMessage('글 등록 중 오류가 발생했습니다. 다시 시도해 주세요.'); // 오류 메시지 설정
+      }
     }
   };
-  
+
   const truncateFileName = (name, maxLength = 20) => {
     if (name.length <= maxLength) return name;
     return `${name.slice(0, maxLength)}...`;
@@ -120,7 +129,7 @@ export default function CreatePost({ defaultLocation = '서울' }) {
   }, [isModalOpen]);
 
   return (
-    <div className="max-w-3xl p-6 mx-auto bg-white rounded-lg shadow-lg md:p-8 lg:p-10">
+    <div className="max-w-3xl my-20 md:my-0 pb-32 md:pb-10 p-6 mx-auto bg-white rounded-lg shadow-lg md:p-8 lg:p-10">
       <h1 className="text-3xl font-bold text-gray-900">Create a New Post</h1>
       <Input
         value={title}
@@ -134,6 +143,7 @@ export default function CreatePost({ defaultLocation = '서울' }) {
           <Input
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Add a tag"
             className="flex-grow p-4 border border-gray-300 rounded-lg"
           />
@@ -153,16 +163,16 @@ export default function CreatePost({ defaultLocation = '서울' }) {
         </div>
       </div>
 
-      <div className="flex items-center mt-6 space-x-4">
-        <FiMapPin className="text-gray-500" />
-        <span className="text-gray-700">Update Location</span>
-      </div>
-      <div className="mt-2 text-left">
+      <div className="md:flex mt-2 text-left justify-between items-center">
+        <div className="flex items-center space-x-4 md:my-0 my-4">
+          <FiMapPin className="text-gray-500" />
+          <span className="text-gray-700">Update Location</span>
+        </div>
         <div className="flex space-x-4">
           <Select
             value={location}
             onChange={handleLocationChange}
-            className="w-1/2 p-4 border border-gray-300 rounded-lg"
+            className="w-1/2 md:w-32 p-2 px-5 border border-gray-300 rounded-lg"
           >
             {Object.keys(locations).map(loc => (
               <option key={loc} value={loc}>{loc}</option>
@@ -171,7 +181,7 @@ export default function CreatePost({ defaultLocation = '서울' }) {
           <Select
             value={subLocation}
             onChange={handleSubLocationChange}
-            className="w-1/2 p-4 border border-gray-300 rounded-lg"
+            className="w-1/2 md:w-full p-2 px-5 border border-gray-300 rounded-lg"
           >
             {locations[location].map(subLoc => (
               <option key={subLoc} value={subLoc}>{subLoc}</option>
@@ -234,6 +244,8 @@ export default function CreatePost({ defaultLocation = '서울' }) {
       >
         Post
       </Button>
+
+      {errorMessage && <p className="mt-4 text-red-500">{errorMessage}</p>} {/* 오류 메시지 표시 */}
 
       <Modal open={isModalOpen} onClickBackdrop={closeModal} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <Modal.Body className="relative p-0">

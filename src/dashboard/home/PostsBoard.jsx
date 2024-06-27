@@ -12,14 +12,11 @@ export default function PostsBoard() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [sortOption, setSortOption] = useState('latest');
-
+  const dummyImgs = ['https://picsum.photos/id/237/200/100', 'https://picsum.photos/id/238/200/100', 'https://picsum.photos/id/239/200/100'];
   useEffect(() => {
     fetchPosts();
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -27,23 +24,11 @@ export default function PostsBoard() {
     setPosts(sortedPosts);
   }, [sortOption]);
 
-  const handleScroll = () => {
-    if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight * 0.7) && !loading && hasMore) {
-      fetchPosts();
-    }
-  };
-
   const fetchPosts = async () => {
     setLoading(true);
-    const currentPostCount = posts.length;
     try {
-      const response = await axios.get(`https://dummyjson.com/posts?limit=5&skip=${currentPostCount}`);
+      const response = await axios.get('/dummyApi/posts?limit=5');
       const postsData = response.data.posts;
-
-      if (postsData.length === 0) {
-        setHasMore(false);
-      }
-
       const postsWithDetails = await Promise.all(
         postsData.map(async (post) => {
           const images = await fetchPostImages(post.id);
@@ -63,7 +48,7 @@ export default function PostsBoard() {
   const fetchPostImages = async (postId) => {
     try {
       // Assuming each post has multiple images
-      return ['https://random.imagecdn.app/256/150', 'https://random.imagecdn.app/256/150', 'https://random.imagecdn.app/256/150'];
+      return dummyImgs;
     } catch (error) {
       console.error('Error fetching image:', error);
       return [];
@@ -72,9 +57,8 @@ export default function PostsBoard() {
 
   const fetchCommentsCount = async (postId) => {
     try {
-      const response = await fetch(`https://dummyjson.com/comments/post/${postId}`);
-      const data = await response.json();
-      return data.comments.length;
+      const response = await axios.get(`/dummyApi/comments/post/${postId}`);
+      return response.data.comments.length;
     } catch (error) {
       console.error('Error fetching comments count:', error);
       return 0;
@@ -83,9 +67,8 @@ export default function PostsBoard() {
 
   const fetchComments = async (postId) => {
     try {
-      const response = await fetch(`https://dummyjson.com/comments/post/${postId}`);
-      const data = await response.json();
-      return data.comments;
+      const response = await axios.get(`/dummyApi/comments/post/${postId}`);
+      return response.data.comments;
     } catch (error) {
       console.error('Error fetching comments:', error);
       return [];
@@ -193,13 +176,19 @@ export default function PostsBoard() {
                 </div>
 
                 <div className="block md:hidden">
-                  {post.images && (
+                  {/* {post.images && (
                     <Carousel className="mt-2" showThumbs={false} showArrows={false} showIndicators={!modalOpen}>
                       {post.images.map((image, index) => (
                         <img key={index} src={image} alt="" className="rounded-lg" />
                       ))}
                     </Carousel>
-                  )}
+                  )} */}
+                    <Carousel className="mt-2" showThumbs={false} showArrows={false} showIndicators={!modalOpen}>
+                      {dummyImgs.map((image, index) => (
+                        <img key={index} src={image} alt="" className="rounded-lg" />
+                      ))}
+                    </Carousel>
+                  
                 </div>
                 <div className="flex justify-between">
                   <div className="py-4">
@@ -207,10 +196,10 @@ export default function PostsBoard() {
                     <p className="mt-2 text-xs md:text-sm">{truncateText(post.body, 100)} <a href="#" className="text-blue-500" onClick={() => handlePostClick(post)}>see more</a></p>
                   </div>
                   <div className="hidden md:block w-[65%] max-w-80">
-                    {post.images && (
+                    {dummyImgs && (
                       <div className="ml-4">
                         <Carousel className="mt-2" showThumbs={false} showArrows={false} showIndicators={!modalOpen}>
-                          {post.images.map((image, index) => (
+                          {dummyImgs.map((image, index) => (
                             <img key={index} src={image} alt="" className="rounded-lg" />
                           ))}
                         </Carousel>
